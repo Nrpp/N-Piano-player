@@ -14,7 +14,7 @@ const NOTE_FREQUENCIES = {
 };
 
 let audioCtx = null;
-const activeOscilators = {};
+const activeOscillators = {};
 
 function initAudio(){
     if (!audioCtx){
@@ -28,9 +28,9 @@ function playNote(keyElement){
     const note = keyElement.dataset.note;
     const frequency = NOTE_FREQUENCIES[note];
 
-    if (!frequency || activeOscilators[note]) return;
+    if (!frequency || activeOscillators[note]) return;
 
-    const osc = audioCtx.createOscilator();
+    const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
 
     osc.type = 'sine';
@@ -44,7 +44,39 @@ function playNote(keyElement){
 
     osc.start();
 
-    activeOscilators[note] = {osc,gainNode};
+    activeOscillators[note] = {osc,gainNode};
     keyElement.classList.add('active');
 }
 
+function stopNote(keyElement){
+    const note = keyElement.dataset.note;
+    const activeNode = activeOscillators[note];
+
+    if (activeNode){
+        const {osc, gainNode} = activeNode;
+
+        gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+
+        osc.stop(audioCtx.currentTime + 0.1);
+
+        delete activeOscillators[note];
+        keyElement.classList.remove('active');
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const keys = document.querySelectorAll(".key");
+
+    keys.forEach(key =>{
+        key.addEventListener("mousedown", () => playNote(key));
+        key.addEventListener("mouseup", () => stopNote(key));
+        key.addEventListener("mouseleave", () => stopNote(key));
+
+        key.addEventListener("touchstart", (e) =>{
+            e.preventDefault();
+            playNote(key);
+        });
+        key.addEventListener("touchend", () => stopNote(key));
+    });
+});
