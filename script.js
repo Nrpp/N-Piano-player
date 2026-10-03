@@ -13,6 +13,22 @@ const NOTE_FREQUENCIES = {
     "B": 493.88,
 };
 
+const KEY_MAP = {
+    'a':'C',
+    's':'D',
+    'd':'E',
+    'f':'F',
+    'g':'G',
+    'h':'A',
+    'j':'B',
+    'w':'Db',
+    'e':'Eb',
+    't':'Gb',
+    'y':'Ab',
+    'u':'Bb',
+
+}
+
 let audioCtx = null;
 const activeOscillators = {};
 
@@ -80,3 +96,21 @@ document.addEventListener("DOMContentLoaded", () => {
         key.addEventListener("touchend", () => stopNote(key));
     });
 });
+
+window.addEventListener("keydown", (e)=>{
+    if (e.repeat) return;
+
+    const note = KEY_MAP[e.key.toLowerCase()];
+    if (note){
+        const keyElement = document.querySelector(`[data-note="${note}"]`);
+        if (keyElement) playNote(keyElement);
+    }
+});
+
+window.addEventListener("keyup", (e) =>{
+    const note = KEY_MAP[e.key.toLowerCase()];
+    if (note){
+        const keyElement = document.querySelector(`[data-note="${note}"]`);
+        if (keyElement) stopNote(keyElement);
+    }
+})
