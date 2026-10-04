@@ -34,3 +34,7 @@ A cool, usefull and styled interactive piano with song-auto-play included. Progr
 2. **Extract** the zip file
 3. Open `index.html`
 4. Use the piano
+
+### Option 2
+
+Go to **https://nrpp.github.io/piano**
