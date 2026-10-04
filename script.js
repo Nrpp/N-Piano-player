@@ -95,6 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         key.addEventListener("touchend", () => stopNote(key));
     });
+
+    document.getElementById("btnSong").addEventListener("click", playSong);
 });
 
 window.addEventListener("keydown", (e)=>{
@@ -113,4 +115,28 @@ window.addEventListener("keyup", (e) =>{
         const keyElement = document.querySelector(`[data-note="${note}"]`);
         if (keyElement) stopNote(keyElement);
     }
-})
+});
+
+function playSong(){
+    const song = [
+        {note: "C", dur: 300},
+        {note: "C", dur: 300},
+        {note: "D", dur: 500},
+        {note: "C", dur: 500},
+        {note: "F", dur: 500},
+        {note: "E", dur: 800},
+    ];
+
+    let timeOffset = 0;
+
+    song.forEach(step => {
+        setTimeout(() => {
+            const keyElement = document.querySelector(`[data-note="${step.note}"]`);
+            if (keyElement){
+                playNote(keyElement);
+                setTimeout(() => stopNote(keyElement), step.dur);
+            }
+        }, timeOffset);
+        timeOffset += step.dur + 100;
+    });
+}
